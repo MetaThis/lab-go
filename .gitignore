@@ -5,6 +5,13 @@
 *.so
 *.dylib
 
+# built binary
+lab-go
+
+# sqlite
+*.db
+*.db-journal
+
 # Test binary, built with `go test -c`
 *.test
 
