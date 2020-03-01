@@ -7,13 +7,6 @@ import (
 	"testing"
 )
 
-var testDB DB
-
-// One time setup before any tests
-func init() {
-	testDB = NewDB(":memory:?cache=shared", true)
-}
-
 // NewTestHandlers is an example of how we would "inject" a different set of dependencies
 // for tests. Here we're substituting an in-memory instance (testDB) of sqlite for tests.
 func NewTestHandlers() Handlers {
