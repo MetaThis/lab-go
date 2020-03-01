@@ -17,26 +17,17 @@ type Run struct {
 	Samples      []Sample
 }
 
-<<<<<<< HEAD
 // Sample represents the data items that will be analysed by a lab instrument.
-=======
->>>>>>> 421e0becc8d262fedf73d142caee489aaa604eca
 type Sample struct {
 	ID int `json:"id"`
 }
 
-<<<<<<< HEAD
 // ValidationError provides a data structure for 400 error responses.
-=======
->>>>>>> 421e0becc8d262fedf73d142caee489aaa604eca
 type ValidationError struct {
 	Errors []string `json:"errors"`
 }
 
-<<<<<<< HEAD
 // RunSuccessResponse defines the response for a new run, providing the new RunID.
-=======
->>>>>>> 421e0becc8d262fedf73d142caee489aaa604eca
 type RunSuccessResponse struct {
 	RunID int `json:"runId"`
 }
@@ -110,25 +101,9 @@ func (h Handlers) Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate
-<<<<<<< HEAD
 	valid, errors := Validate(body, h.Schema.Samples)
 	if !valid {
 		RespondAsJSON(errors, 400, w)
-=======
-	jsonLoader := gojsonschema.NewBytesLoader(body)
-	result, err := h.Schema.Samples.Validate(jsonLoader)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	if !result.Valid() {
-		errors := make([]string, len(result.Errors()))
-		for i, desc := range result.Errors() {
-			errors[i] = desc.Description()
-		}
-		v := ValidationError{errors}
-		RespondAsJSON(v, 400, w)
->>>>>>> 421e0becc8d262fedf73d142caee489aaa604eca
 		return
 	}
 
