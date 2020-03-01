@@ -37,7 +37,7 @@ type Schema struct {
 
 // NewSchema initializes our schema(s) from the JSON file(s) that define them.
 func NewSchema() Schema {
-	path, err := filepath.Abs("./schema/samples.json")
+	path, err := filepath.Abs("./json-schemas/samples.json")
 	if err != nil {
 		log.Fatal(err)
 	}
