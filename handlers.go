@@ -81,6 +81,7 @@ func Validate(payload []byte, schema *gojsonschema.Schema) (valid bool, errors V
 	return true, ValidationError{}
 }
 
+// Post is the request handler for submitting samples.
 func (h Handlers) Post(w http.ResponseWriter, r *http.Request) {
 	// Extract instrumentID from URL.
 	vars := mux.Vars(r)

@@ -27,6 +27,8 @@ func NewDB(filepath string, initData bool) DB {
 	return db
 }
 
+// InitDB prepares a DB connection. For an in-memory instance instead of a file,
+// use ":memory:?cache=shared" as the filepath.
 func InitDB(filepath string) *sql.DB {
 	client, err := sql.Open("sqlite3", filepath)
 	if err != nil {
