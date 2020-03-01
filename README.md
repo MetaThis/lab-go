@@ -1,6 +1,6 @@
 # lab-go
 
-Example of a simple microservice in Go, demonstrating some patterns that proven useful.
+Example of a simple microservice in Go, demonstrating some patterns that have proven useful.
 
 ## Setup
 
