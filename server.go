@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path/filepath"
 
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 func main() {
@@ -28,24 +26,4 @@ func NewRouter(h Handlers) *mux.Router {
 	r.HandleFunc("/lab/instrument/{instrument_id}/samples", h.Post)
 	// ... additional routes ...
 	return r
-}
-
-// Schema holds loaded JSON schemas used for validation
-type Schema struct {
-	Samples *gojsonschema.Schema
-}
-
-// NewSchema initializes our schema(s) from the JSON file(s) that define them.
-func NewSchema() Schema {
-	path, err := filepath.Abs("./json-schemas/samples.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	samplesLoader := gojsonschema.NewReferenceLoader("file://" + path)
-	samples, err := gojsonschema.NewSchema(samplesLoader)
-	if err != nil {
-		log.Fatal(err)
-	}
-	schema := Schema{Samples: samples}
-	return schema
 }
