@@ -17,14 +17,17 @@ type Run struct {
 	Samples      []Sample
 }
 
+// Sample represents the data items that will be analysed by a lab instrument.
 type Sample struct {
 	ID int `json:"id"`
 }
 
+// ValidationError provides a data structure for 400 error responses.
 type ValidationError struct {
 	Errors []string `json:"errors"`
 }
 
+// RunSuccessResponse defines the response for a new run, providing the new RunID.
 type RunSuccessResponse struct {
 	RunID int `json:"runId"`
 }
@@ -56,6 +59,28 @@ func RespondAsJSON(payload interface{}, statusCode int, w http.ResponseWriter) {
 	w.Write(json)
 }
 
+// Validate handles the details of validating a payload (request body) with a
+// JSON Schema and building an error report. If valid is true, ignore the
+// ValidationError object. If valid is false, return the ValidationError as
+// a 400 (Bad Request) response.
+func Validate(payload []byte, schema *gojsonschema.Schema) (valid bool, errors ValidationError) {
+	jsonLoader := gojsonschema.NewBytesLoader(payload)
+	result, err := schema.Validate(jsonLoader)
+	if err != nil {
+		v := ValidationError{[]string{"Malformed JSON"}}
+		return false, v
+	}
+	if !result.Valid() {
+		errors := make([]string, len(result.Errors()))
+		for i, desc := range result.Errors() {
+			errors[i] = desc.Description()
+		}
+		v := ValidationError{errors}
+		return false, v
+	}
+	return true, ValidationError{}
+}
+
 func (h Handlers) Post(w http.ResponseWriter, r *http.Request) {
 	// Extract instrumentID from URL.
 	vars := mux.Vars(r)
@@ -76,19 +101,9 @@ func (h Handlers) Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate
-	jsonLoader := gojsonschema.NewBytesLoader(body)
-	result, err := h.Schema.Samples.Validate(jsonLoader)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	if !result.Valid() {
-		errors := make([]string, len(result.Errors()))
-		for i, desc := range result.Errors() {
-			errors[i] = desc.Description()
-		}
-		v := ValidationError{errors}
-		RespondAsJSON(v, 400, w)
+	valid, errors := Validate(body, h.Schema.Samples)
+	if !valid {
+		RespondAsJSON(errors, 400, w)
 		return
 	}
 
